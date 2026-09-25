@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { ArrowUpRight, Camera, Clapperboard, Gamepad2, Mail, MessageCircle, MonitorPlay, Play, Sparkles, UserRound, X } from 'lucide-react'
-import { getYoutubeId, projects } from './data/projects'
+import { ArrowLeft, ArrowRight, ArrowUpRight, Camera, Clapperboard, Gamepad2, Mail, MessageCircle, MonitorPlay, Play, Sparkles, UserRound, X } from 'lucide-react'
+import { getYoutubeId, horizontalVideos, verticalVideos } from './data/projects'
 import './App.css'
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
       <main id="top">
         <section className="hero-section page-section"><div className="hero-copy reveal-up"><p className="eyebrow"><span className="status-dot" /> Available for select projects</p><h1>Video Editor for<br /><em>YouTube &amp; Reels</em></h1><p className="hero-description">I edit engaging short-form videos, reels, and YouTube content with clean cuts, captions, effects, and strong pacing.</p><div className="hero-actions"><a className="button button-primary" href="#work">View my work <ArrowUpRight size={17} /></a><a className="button button-ghost" href="#contact">Contact me</a></div></div><div className="hero-mark" aria-hidden="true"><div className="mark-inner"><Clapperboard size={32} strokeWidth={1.2} /><span>SHORT<br />FORM<br />STORY</span></div><div className="mark-line" /></div></section>
 
-        <section id="work" className="work-section page-section"><div className="section-heading"><div><p className="eyebrow">Selected work</p><h2>A few things I've<br /><em>put in motion.</em></h2></div><p className="section-note">A selection of edits made to hold attention,<br />tell a story, and feel good to watch.</p></div><div className="project-grid">{projects.map((project, index) => <article className="project-card" key={project.title}><button className="thumbnail-button" type="button" onClick={() => setSelectedProject(project)} aria-label={`Watch ${project.title}`}><img src={`https://img.youtube.com/vi/${getYoutubeId(project.youtubeUrl)}/hqdefault.jpg`} alt="" /><span className="play-badge"><Play size={16} fill="currentColor" /></span><span className="card-number">0{index + 1}</span></button><div className="project-info"><div><p className="project-category">{project.category}</p><h3>{project.title}</h3></div><button className="watch-link" type="button" onClick={() => setSelectedProject(project)}>Watch video <ArrowUpRight size={15} /></button><p className="project-description">{project.description}</p></div></article>)}</div></section>
+        <section id="work" className="work-section page-section"><div className="section-heading"><div><p className="eyebrow">Selected work</p><h2>A few things I've<br /><em>put in motion.</em></h2></div><p className="section-note">A selection of edits made to hold attention,<br />tell a story, and feel good to watch.</p></div><WorkCarousel title="Horizontal Videos" videos={horizontalVideos} onSelect={setSelectedProject} /><WorkCarousel title="Vertical Videos" videos={verticalVideos} onSelect={setSelectedProject} vertical /></section>
 
         <section id="services" className="services-section page-section"><div className="section-heading compact"><div><p className="eyebrow">What I do</p><h2>Editing that keeps<br /><em>people watching.</em></h2></div><p className="section-note">From the first frame to the final<br />caption, every cut has a job.</p></div><div className="services-grid"><Service icon={<MonitorPlay size={22} />} title="YouTube Shorts" text="High-energy edits built for retention and replay." /><Service icon={<Sparkles size={22} />} title="Instagram Reels" text="Polished, on-brand stories made to stop the scroll." /><Service icon={<UserRound size={22} />} title="Talking Head Videos" text="Clear, confident edits with captions that land." /><Service icon={<Gamepad2 size={22} />} title="Gaming / Entertainment" text="Big moments, sharp timing, and sound that hits." /></div></section>
 
@@ -38,5 +38,13 @@ function App() {
 }
 
 function Service({ icon, title, text }) { return <div className="service-item"><div className="service-icon">{icon}</div><div><h3>{title}</h3><p>{text}</p></div><ArrowUpRight className="service-arrow" size={17} /></div> }
+
+function WorkCarousel({ title, videos, onSelect, vertical = false }) {
+  const scrollByCard = (direction) => {
+    document.getElementById(`${title.toLowerCase().replace(' ', '-')}-carousel`)?.scrollBy({ left: direction * 360, behavior: 'smooth' })
+  }
+
+  return <div className={`work-carousel ${vertical ? 'vertical-carousel' : ''}`}><div className="carousel-heading"><h3>{title}</h3><div className="carousel-controls"><button type="button" onClick={() => scrollByCard(-1)} aria-label={`Previous ${title}`}><ArrowLeft size={16} /></button><button type="button" onClick={() => scrollByCard(1)} aria-label={`Next ${title}`}><ArrowRight size={16} /></button></div></div><div id={`${title.toLowerCase().replace(' ', '-')}-carousel`} className="carousel-track">{videos.map((project, index) => <article className="project-card" key={project.title}><button className="thumbnail-button" type="button" onClick={() => onSelect(project)} aria-label={`Watch ${project.title}`}><img src={`https://img.youtube.com/vi/${getYoutubeId(project.youtubeUrl)}/hqdefault.jpg`} alt="" /><span className="play-badge"><Play size={16} fill="currentColor" /></span><span className="card-number">0{index + 1}</span></button><div className="project-info"><div><p className="project-category">{project.category}</p><h3>{project.title}</h3></div><button className="watch-link" type="button" onClick={() => onSelect(project)}>Watch video <ArrowUpRight size={15} /></button><p className="project-description">{project.description}</p></div></article>)}</div></div>
+}
 
 export default App
